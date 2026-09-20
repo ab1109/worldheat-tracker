@@ -1,0 +1,36 @@
+{
+  "name": "world-heat-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A live weather dashboard for comparing heat and seven-day temperatures across major world capitals.",
+  "homepage": "https://ab1109.github.io/worldheat-tracker",
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "axios": "^1.7.9",
+    "chart.js": "^2.9.4",
+    "classnames": "^2.5.1",
+    "react": "^17.0.2",
+    "react-chartjs-2": "^2.11.2",
+    "react-countup": "^4.3.3",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
