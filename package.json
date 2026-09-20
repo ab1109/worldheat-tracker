@@ -1,25 +1,29 @@
 {
   "name": "world-heat-tracker",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "A live weather dashboard for comparing heat and seven-day temperatures across major world capitals.",
+  "license": "MIT",
+  "type": "module",
+  "description": "A live weather dashboard for comparing heat, humidity, and seven-day temperatures across major world capitals, with a hottest-cities leaderboard.",
   "homepage": "https://ab1109.github.io/worldheat-tracker",
   "dependencies": {
-    "@material-ui/core": "^4.12.4",
-    "axios": "^1.7.9",
-    "chart.js": "^2.9.4",
+    "axios": "^1.20.0",
+    "chart.js": "^4.5.1",
     "classnames": "^2.5.1",
-    "react": "^17.0.2",
-    "react-chartjs-2": "^2.11.2",
-    "react-countup": "^4.3.3",
-    "react-dom": "^17.0.2",
-    "react-scripts": "^4.0.3"
+    "react": "^19.3.0",
+    "react-chartjs-2": "^5.3.1",
+    "react-countup": "^6.5.3",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && node scripts/publish-dist.js"
   },
   "browserslist": {
     "production": [

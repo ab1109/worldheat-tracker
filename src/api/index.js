@@ -50,3 +50,23 @@ export const fetchData = async (code = 'world') => {
 };
 
 export const fetchCountries = async () => locations;
+
+export const fetchLeaderboard = async () => {
+    const ranked = locations.filter((location) => location.code !== 'world');
+    const { data } = await axios.get(weatherUrl, {
+        params: {
+            latitude: ranked.map((location) => location.latitude).join(','),
+            longitude: ranked.map((location) => location.longitude).join(','),
+            current: 'temperature_2m,apparent_temperature',
+            timezone: 'auto',
+        },
+    });
+
+    return ranked
+        .map((location, index) => ({
+            location,
+            temperature: data[index].current.temperature_2m,
+            apparentTemperature: data[index].current.apparent_temperature,
+        }))
+        .sort((a, b) => b.temperature - a.temperature);
+};
