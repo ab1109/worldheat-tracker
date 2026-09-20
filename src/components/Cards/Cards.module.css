@@ -1,30 +1,104 @@
-.container{
-   width: min(100%, 980px);
-   margin: 12px 0 34px;
+.container {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 980px);
+    margin: 4px 0 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
 }
 
-.card{
-    margin: 0 1% !important;
-    min-height: 188px;
-    border-radius: 3px !important;
-    box-shadow: 0 10px 30px rgba(43, 74, 67, .08) !important;
-    background: rgba(255, 253, 248, .85) !important;
+.loading {
+    color: var(--color-text-muted);
+    font: 15px var(--font-body);
 }
 
-.infected{
-    border-top: 7px solid #e66b36;
+.card {
+    position: relative;
+    padding: 26px 24px 22px;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-elevated);
+    backdrop-filter: blur(16px);
+    transition: transform 0.3s var(--ease-out), background 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+    overflow: hidden;
 }
 
-.feelsLike{
-    border-top: 7px solid #e8ae3f;
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--accent-gradient);
 }
 
-.humidity{
-    border-top: 7px solid #287d78;
+.card:hover {
+    transform: translateY(-4px);
+    background: var(--color-surface-hover);
+    border-color: rgba(255, 255, 255, 0.16);
 }
 
-@media(max-width:770px){
-    .card{
-        margin: 2% 0 !important; /*materialui element*/
+.heat {
+    --accent-gradient: linear-gradient(90deg, var(--color-heat-2), var(--color-heat-3));
+    --accent-color: var(--color-heat-2);
+}
+
+.amber {
+    --accent-gradient: linear-gradient(90deg, var(--color-gold), var(--color-heat-1));
+    --accent-color: var(--color-gold);
+}
+
+.cool {
+    --accent-gradient: linear-gradient(90deg, var(--color-cool-1), var(--color-cool-2));
+    --accent-color: var(--color-cool-1);
+}
+
+.iconBadge {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+}
+
+.iconBadge svg {
+    width: 20px;
+    height: 20px;
+}
+
+.cardLabel {
+    margin: 0 0 6px;
+    color: var(--color-text-muted);
+    font: 500 13px/1.4 var(--font-body);
+}
+
+.cardValue {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.cardLocation {
+    margin: 0;
+    color: var(--color-text);
+    font: 600 13px/1.4 var(--font-body);
+}
+
+.cardCaption {
+    margin: 3px 0 0;
+    color: var(--color-text-faint);
+    font: 12px/1.5 var(--font-body);
+}
+
+@media (max-width: 770px) {
+    .container {
+        grid-template-columns: 1fr;
     }
 }

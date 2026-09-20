@@ -1,133 +1,137 @@
 # World Heat Tracker
 
-World Heat Tracker is a focused weather dashboard for comparing live temperature, thermal comfort, humidity, wind, and the seven-day outlook across major world capitals.
+**[Live app → ab1109.github.io/worldheat-tracker](https://ab1109.github.io/worldheat-tracker/)**
 
-It began as a COVID-19 tracker. The original data source is no longer maintained, so the product has been redirected toward a more durable and useful question: **how does the heat compare around the world right now?**
+A live weather dashboard for comparing current heat, humidity, and the seven-day outlook across major world capitals — plus a leaderboard ranking every tracked city by temperature right now.
 
-## Product Snapshot
+It began as a COVID-19 case tracker. That data source stopped being maintained, so the project was redirected toward a more durable question: **how does the heat compare around the world right now?**
 
-- **Live conditions:** current temperature, feels-like temperature, and relative humidity.
-- **Seven-day context:** daily high and low temperature trends in a responsive line chart.
-- **Global comparison:** curated capital-city locations across multiple continents.
-- **Low-friction access:** weather data comes from Open-Meteo and requires no API key.
-- **Responsive UI:** designed for quick scanning on desktop and mobile.
-- **Graceful failure:** API errors are surfaced as a user-facing state instead of breaking the dashboard.
+## Features
 
-## Demo Flow
-
-1. Open the dashboard.
-2. Choose a location from the country and capital selector.
-3. Compare current conditions with the seven-day high and low forecast.
-
-The `Global reference` option uses a fixed coordinate in the tropics as a consistent baseline. It is not a mathematical global average, which keeps the product transparent about what the API actually provides.
+- **Live conditions** — current temperature, feels-like temperature, and relative humidity for any tracked location, with animated count-up numbers.
+- **Seven-day outlook** — daily high and low temperatures in a smooth, interactive line chart.
+- **Hottest-cities leaderboard** — every capital ranked live by current temperature in a single batched request, with a heat-intensity bar per row. Tap a city to jump straight to its dashboard.
+- **22 curated locations** across every populated continent, plus a fixed tropical "Global reference" point as a transparent baseline.
+- **No API key required** — all weather data comes from the free [Open-Meteo](https://open-meteo.com/) API.
+- **Dark, glass-panel UI** built as a small first-party design system (CSS custom properties, no UI framework), tuned to stay legible under browser dark-mode heuristics.
+- **Graceful failure** — network errors surface as an in-app message instead of a broken screen.
 
 ## Tech Stack
 
-- React 17 with Create React App
-- Material UI for layout primitives
-- Chart.js with `react-chartjs-2` for forecast visualization
-- Axios for HTTP requests
-- CSS Modules for component-scoped styling
-- Open-Meteo Forecast API for current and daily weather data
+| Layer | Choice |
+|---|---|
+| UI | React 19 |
+| Build tool | Vite 8 |
+| Charting | Chart.js 4 + react-chartjs-2 5 |
+| HTTP | Axios |
+| Styling | CSS Modules + a shared token sheet (`src/index.css`) |
+| Data source | [Open-Meteo Forecast API](https://open-meteo.com/) — current conditions, 7-day forecast, and batched multi-location queries |
+| Hosting | GitHub Pages, served from this branch's root |
+
+The project deliberately carries **zero UI framework dependency** (no Material UI, Bootstrap, etc.) and audits clean — `npm audit` reports **0 known vulnerabilities** across ~50 packages. It previously ran on Create React App (deprecated by the React team) with Material UI 4 (end-of-life); both were removed as part of the heat-tracker rewrite in favor of Vite and a small hand-built design system.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 14 or newer
-- npm 6 or newer
-- An internet connection for Open-Meteo requests
+- Node.js 18 or newer
+- npm 9 or newer
+- An internet connection (the app talks to Open-Meteo at runtime; no key or `.env` needed)
 
-### Install and run locally
+### Install
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/ab1109/worldheat-tracker.git
 cd worldheat-tracker
 npm install
-npm start
 ```
 
-The development server opens at `http://localhost:3000`.
+### Run locally
 
-No API key or environment variables are required.
+```bash
+npm run dev
+```
 
-### Create a production build
+This starts Vite's dev server and opens the app automatically at `http://localhost:5173/worldheat-tracker/app.html`, with instant hot module reload.
+
+> **Why `app.html` and not `index.html`?** This repository publishes its own built site: the root `index.html` and `assets/` folder you'll see in the file tree are **generated output**, checked in so GitHub Pages can serve this branch directly with no CI build step. `app.html` is the real, hand-edited source template for local development. Never hand-edit root `index.html` — it gets overwritten by every deploy. See [Deployment](#deployment) below.
+
+### Build for production
 
 ```bash
 npm run build
 ```
 
-The optimized output is written to `build/` and can be hosted by any static web server.
+Outputs an optimized, hashed bundle to `dist/` (gitignored).
 
-For a quick local preview of the production output:
-
-```bash
-npx serve -s build
-```
-
-### Run tests
+### Preview a production build locally
 
 ```bash
-npm test
+npm run preview
 ```
 
-The project currently has no dedicated test suite, so this command starts Create React App's test runner in watch mode. The next testing priority is an API adapter test with mocked Open-Meteo responses, followed by a selector-to-dashboard interaction test.
+### Deploy
 
-## Architecture
+```bash
+npm run deploy
+```
 
-The app keeps data access separate from presentation:
+Builds the app and then copies `dist/` over the repository root (`index.html`, `assets/`, `manifest.json`, favicons) via `scripts/publish-dist.js`. Review the resulting `git diff`, then commit and push to `gh-pages` to update the live site.
+
+## Project Structure
 
 ```text
-src/
-├── api/
-│   └── index.js                    Open-Meteo adapter and location catalog
-├── components/
-│   ├── Cards/                      Current weather metrics
-│   ├── Chart/                      Seven-day high/low visualization
-│   └── CountryPicker/              Location selection
-├── App.js                          Loading, selection, and error state
-└── App.module.css                  Page-level visual system
+.
+├── app.html                    Vite dev entry — the real HTML source
+├── index.html                  Generated production entry (do not hand-edit)
+├── assets/                     Generated hashed JS/CSS bundle (do not hand-edit)
+├── favicon.ico, logo192.png,   Published PWA icons + manifest, mirrored
+│   logo512.png, manifest.json, from public/ on every deploy
+│   robots.txt
+├── public/                     Source static assets, copied as-is into the build
+├── scripts/
+│   └── publish-dist.js         Copies dist/ over the repo root after a build
+├── src/
+│   ├── main.jsx                 React entry point
+│   ├── index.css                Design tokens (color, type, radius) + global reset
+│   ├── App.jsx                  Top-level state: selected location, active view, errors
+│   ├── App.module.css
+│   ├── api/
+│   │   └── index.js             Open-Meteo adapter — fetchData, fetchCountries, fetchLeaderboard
+│   └── components/
+│       ├── Cards/                Current-conditions metric cards
+│       ├── Chart/                 7-day high/low forecast chart
+│       ├── CountryPicker/         Location selector
+│       └── Leaderboard/           Live hottest-cities ranking
+├── vite.config.js
+└── package.json
 ```
 
-The API adapter normalizes the remote response into a small view model containing `location`, `current`, `daily`, and `timezone`. Components consume that model without knowing the provider's URL or query parameters.
+The API adapter normalizes Open-Meteo's response into a small view model (`location`, `current`, `daily`, `timezone`) so components never know the provider's URL or query parameters.
 
-Relevant entry points:
+## How the Leaderboard Works
 
-- [API adapter](src/api/index.js)
-- [Application state](src/App.js)
-- [Metric cards](src/components/Cards/Cards.jsx)
-- [Forecast chart](src/components/Chart/Chart.jsx)
-- [Location selector](src/components/CountryPicker/CountryPicker.jsx)
+Open-Meteo accepts comma-separated coordinate lists and returns one forecast object per location, in order. `fetchLeaderboard()` in `src/api/index.js` sends every tracked capital's latitude/longitude as a **single batched request**, then sorts the results client-side — so ranking 22 cities costs one HTTP round trip, not 22.
 
 ## Data Source
 
-Weather data is provided by [Open-Meteo](https://open-meteo.com/). The app requests:
+Weather data is provided by [Open-Meteo](https://open-meteo.com/), which requires no API key or account. The app requests:
 
-- Current temperature
-- Apparent temperature
-- Relative humidity
-- Wind speed
-- Weather code
-- Seven days of daily maximum and minimum temperature
-- Daily precipitation totals
+- Current temperature, apparent temperature, relative humidity, wind speed, and weather code
+- Seven days of daily maximum/minimum temperature and precipitation
+- Timezone-aware timestamps, resolved server-side per coordinate
 
-Open-Meteo handles timezone conversion for each selected coordinate. Weather values are displayed in Celsius.
-
-## Engineering Notes
-
-- Location coordinates are intentionally kept in the client because the app compares a curated set of known capital cities rather than searching arbitrary addresses.
-- The selector uses stable location codes, avoiding brittle country-name URL paths.
-- The API request is isolated in one module, making it straightforward to replace Open-Meteo or add caching later.
-- The interface uses a restrained palette and compact information hierarchy so the dashboard remains useful as a repeated-use tool, not just a one-time demo.
+All values are displayed in Celsius.
 
 ## Roadmap
 
 - Add geolocation-based "near me" weather.
-- Add a searchable location catalog backed by Open-Meteo geocoding.
+- Add a searchable location catalog backed by Open-Meteo's geocoding API.
 - Add unit switching between Celsius and Fahrenheit.
 - Add historical temperature anomalies and heat alerts.
-- Add automated API and component tests.
+- Add automated API-adapter and component tests (none exist yet).
+- Replace the default PWA icons (`logo192.png`, `logo512.png`, `favicon.ico`) with tracker-branded artwork.
 
 ## License
 
-No license has been declared yet. Add a license before distributing the project publicly.
+MIT — see [LICENSE](LICENSE).
